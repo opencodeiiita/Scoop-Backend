@@ -31,28 +31,17 @@ Scoop is your window to the heartbeat of campus life. Engage, explore, and uncov
 ## Join The Scoop Revolution
 Scoop is a revolution in campus journalism. Together, let's elevate the way we share, consume, and engage with campus news. Your insights, your influence - let the Scoop revolution begin!
  
-## Dependencies
-You need npm/yarn installed in your local machine in order to run this app.
-
 ## Installation
 
 ```bash
   npm install 
   npm run dev
 ```
-## How To Setup 
-* Make sure your machine is having internet connection.
-* Fork the repository.
-* Open shell (which ever your OS support) on your PC.
-* Change drive to the location where you want your project to be copied.
-* Clone it to your local setup by using command git clone ```<repo link>```.
-* Once cloned, Run the following command in the root directory of the project ```npm install```.
-* After the process is completed, run the command ```npm run dev```.
-* The website will be live on ```localhost:3000```.
-
+Make sure you have required enviornment variables saved in the ```.env``` file in the root of the project. A file ```.env.example``` is attached for reference.
 
 ## Claim an issue
 Comment on the issue. In case of no activity on the issue even after 2 days, the issue will be reassigned. If you have difficulty approaching the issue, feel free to ask on our discord channel.
+
 ## Communication 
 Whether you are working on a new feature or facing a doubt please feel free to ask us on our [discord](https://discord.gg/D9999YTkS8) channel. We will be happy to help you out.
 
@@ -75,3 +64,4 @@ Please help us follow the best practice to make it easy for the reviewer as well
 
 - Be polite: Be polite to other community members.
 
+## API Endpoints
