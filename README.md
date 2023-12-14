@@ -65,3 +65,32 @@ Please help us follow the best practice to make it easy for the reviewer as well
 - Be polite: Be polite to other community members.
 
 ## API Endpoints
+- **Authentication Routes:** 
+  - `POST /api/auth/register`: Register a new user.
+  - `POST /api/auth/login`: Authenticate and log in a user.
+
+- **Users Routes:**
+   - `POST /api/users/:userId/upvote`: Upvote an user. (auth required)
+   - `POST /api/users/:userId/downvote`: Downvote an user. (auth required)
+
+- **Profile Routes:**
+   - `GET /api/profile/:userId`: Get user profile details.
+   - `PUT /api/profile/:userId`: Update user profile details.  (auth required)
+   - `GET /api/profile/:userId/news`: Get news articles posted by a specific user.
+
+- **News Routes:**
+   - `POST /api/news/post`: Allow users to post news (auth required)
+   - `POST /api/news/:newsId/upvote`: Upvote a news. (auth required)
+   - `GET /api/news/:userId/feed`: Get a personalized news feed for a user (based on followed users, and trending news).  (auth required)
+
+- **Comments Routes:**
+   - `GET /api/news/:newsId/comments`: Get comments for a news article
+   - `POST /api/news/:newsId/comments`: Add a new comment to a news (auth required)
+   - `PUT /api/news/:newsId/comments/:commentId`: Edit a comment (auth required)
+
+-  **General Routes:**
+   - `GET /api/trending/news`: Get trending news articles.
+   - `GET /api/recommended/users`: Get recommended users to follow. (auth required)
+
+ - **Admin Routes:**
+     - `DELETE /api/admin/news/:newsId`: Admin can delete any news article
