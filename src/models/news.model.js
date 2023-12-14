@@ -35,7 +35,7 @@ const newsSchema = new Schema({
     Comments:[
         {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Comment',
         }
     ],
 },
