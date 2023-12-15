@@ -25,11 +25,11 @@ app.get("/", (req, res) => {
   console.log(process.env.JWT_KEY);
 });
 
-app.all("*", (req, res, next) => {
-  next(new ExpressError(404, "Page not found!"));
-});
+// app.all("*", (req, res, next) => {
+//   next(new ExpressError(404, "Page not found!"));
+// });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   let { status = 500, message = "Something Went Wrong!" } = err;
   res.status(status).render("error.ejs", { message });
 });
@@ -37,4 +37,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}! 🚀`);
   connectDB();
-
+});
