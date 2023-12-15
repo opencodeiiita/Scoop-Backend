@@ -1,12 +1,8 @@
-import express from "express";
-const router = express.Router();
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-const { jwt } = "jsonwebtoken";
 
 export async function register(req, res) {
   try {
-    const data = req.body;
     const {
       FirstName,
       LastName,
@@ -47,7 +43,7 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   try {
-    const { UserName, Password } = req.body;
+    const { Password } = req.body;
     //console.log(Password);
     const existUser = await User.findOne({ UserName: req.body.UserName });
     //console.log(existUser);
