@@ -1,45 +1,47 @@
-import {Schema, model} from "mongoose";
+import pkg from "mongoose";
+const { Schema, model } = pkg;
 
-const newsSchema = new Schema({
-    Headline:{
-        type: String,
-        required: true,
-        min: 2,
-        max: 200,
+const newsSchema = new Schema(
+  {
+    Headline: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 200,
     },
     Location: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     // Storing HTML file as a string
-    Description:{
-        type: String,
-        required: true,
-        min: 2,
-        max: 2000,
+    Description: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 2000,
     },
-    Tags:[
-        {
-            type: String,
-            default: "",
-        }
+    Tags: [
+      {
+        type: String,
+        default: "",
+      },
     ],
     UpvoteCount: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
-    User:{
+    User: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    Comments: [
+      {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
-    Comments:[
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Comment',
-        }
+        ref: "Comment",
+      },
     ],
-},
-    {timestamps: true}
+  },
+  { timestamps: true },
 );
 
 const News = model("News", newsSchema);
