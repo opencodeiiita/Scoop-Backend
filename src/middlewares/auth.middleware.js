@@ -1,6 +1,7 @@
 const express = require('express');
 const user = require('../models/user.model');
-//next() is the next middle ware to be executed
+
+// next() is the next middleware to be executed
 const isAdmin = async (req, res, next) => {
   const { UserName } = req.body;
 
