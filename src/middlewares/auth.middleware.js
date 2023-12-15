@@ -1,5 +1,4 @@
-const express = require('express');
-const user = require('../models/user.model');
+import user from '../models/user.model.js';
 
 // next() is the next middleware to be executed
 const isAdmin = async (req, res, next) => {
@@ -21,4 +20,4 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-module.exports = isAdmin;
+export default isAdmin;
