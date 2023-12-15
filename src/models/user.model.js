@@ -1,5 +1,9 @@
-import pkg from "mongoose";
-const { Schema, model } = pkg;
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
+dotenv.config();
 
 const userSchema = new Schema(
   {
@@ -45,8 +49,44 @@ const userSchema = new Schema(
       },
     ],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  console.log(this);
+  const user = this;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const newPass = await bcrypt.hash(user.Password, salt);
+    user.Password = newPass;
+  } catch (err) {
+    next(err);
+  }
+});
+
+userSchema.methods.generateToken = async function () {
+  try {
+    return jwt.sign(
+      {
+        userId: this._id.toString(),
+        FirstName: this.FirstName,
+        LastName: this.LastName,
+        UserName: this.UserName,
+        ProfileImage: this.ProfileImage,
+        Email: this.Email,
+        isAdmin: this.isAdmin,
+        myUpvotes: this.myUpvotes,
+        News: this.News,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "30d",
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const User = model("User", userSchema);
 
