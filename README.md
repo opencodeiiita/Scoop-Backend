@@ -64,33 +64,41 @@ Please help us follow the best practice to make it easy for the reviewer as well
 
 - Be polite: Be polite to other community members.
 
-## API Endpoints
-- **Authentication Routes:** 
-  - `POST /api/auth/register`: Register a new user.
-  - `POST /api/auth/login`: Authenticate and log in a user.
+## API endpoints
 
-- **Users Routes:**
-   - `POST /api/users/:userId/upvote`: Upvote an user. (auth required)
-   - `POST /api/users/:userId/downvote`: Downvote an user. (auth required)
+### Users Routes:
+- `POST /api/users/:userId/upvote`: Upvote a user. (auth required)
+- `POST /api/users/:userId/downvote`: Downvote a user. (auth required)
+- `GET /api/users/allUsers`: Get details of all users (admin access (isAdmin = 1) and auth required)
+- `GET /api/user/:userId`: Get details of a user (auth required)
+- `GET /api/user/:userId`: Get details of a user (auth required)
+- `GET /api/user/:userId`: Get details of a user (auth required)
+- `DELETE /api/user/delete/:userId`: Delete User Details (auth required with isAdmin=1)
 
-- **Profile Routes:**
-   - `GET /api/profile/:userId`: Get user profile details.
-   - `PUT /api/profile/:userId`: Update user profile details.  (auth required)
-   - `GET /api/profile/:userId/news`: Get news articles posted by a specific user.
+### News Routes:
+- `POST /api/scoop/post`: Allow users to post news (auth required)
+- `POST /api/scoop/:scoopId/upvote`: Upvote a news. (auth required)
+- `GET /api/scoop/:scoopId`: Get news details
+- `DELETE /api/scoop/delete/:userId`: Delete news (auth required with admin access)
+- `PATCH /api/scoop/:scoop`: Get details of a user (auth required)
 
-- **News Routes:**
-   - `POST /api/news/post`: Allow users to post news (auth required)
-   - `POST /api/news/:newsId/upvote`: Upvote a news. (auth required)
-   - `GET /api/news/:userId/feed`: Get a personalized news feed for a user (based on followed users, and trending news).  (auth required)
+### Home Routes:
+- `GET /api/scoop/home/top`: Top 5 news sorted based on most number of upvotes on news 
+- `GET /api/scoop/home/credible`: Latest news of top 5 profiles sorted based on most number of upvotes on profile
+- `GET /api/scoop/home/categories`: Out of all the news in the database, return an array of all the tags used in all news. Ensure the array does not have duplicate entries
+- `GET /api/scoop/home/latest`: Out of all the news in the database, return 5 latest news
 
-- **Comments Routes:**
-   - `GET /api/news/:newsId/comments`: Get comments for a news article
-   - `POST /api/news/:newsId/comments`: Add a new comment to a news (auth required)
-   - `PUT /api/news/:newsId/comments/:commentId`: Edit a comment (auth required)
+### Authentication Routes:
+- `POST /api/auth/register`: Register a new user.
+- `POST /api/auth/login`: Authenticate and log in a user
 
--  **General Routes:**
-   - `GET /api/trending/news`: Get trending news articles.
-   - `GET /api/recommended/users`: Get recommended users to follow. (auth required)
+### General Routes:
+- `GET /api/scoop/top`: Sort all news according to most number of upvotes
+- `GET /api/scoop/credible`: Sort news according to highest upvotes in the profile of the user who uploaded it
+- `GET /api/scoop/latest`: Sort according to date and return the latest news
 
- - **Admin Routes:**
-     - `DELETE /api/admin/news/:newsId`: Admin can delete any news article
+### Comments Routes:
+- `GET /api/scoop/:scoopId/comments`: Get comments for a news article (Auth req.)
+- `POST /api/scoop/:scoopId/comments`: Add a new comment to a news article (auth required) 
+- `PATCH /api/scoop/:scoopId/comments/:commentId`: Edit a comment (auth required)
+
