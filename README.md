@@ -31,8 +31,9 @@ Scoop is your window to the heartbeat of campus life. Engage, explore, and uncov
 ## Join The Scoop Revolution
 Scoop is a revolution in campus journalism. Together, let's elevate the way we share, consume, and engage with campus news. Your insights, your influence - let the Scoop revolution begin!
  
-## Installation
-
+## Setup Guide
+1. Create a .env file in the root directory.
+2. Add your mongodb uri in the .env file (refer env.example file).
 ```bash
   npm install 
   npm run dev
