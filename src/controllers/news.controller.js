@@ -38,7 +38,7 @@ export async function credibleNews(req, res) {
     });
 }
 
-function getNewsOfUser(newsIds) {
+async function getNewsOfUser(newsIds) {
   return new Promise((resolve, reject) => {
     News.find({
       _id: {
