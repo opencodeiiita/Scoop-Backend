@@ -1,3 +1,4 @@
+import user from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 const verifyToken = util.promisify(jwt.verify);
