@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/auth", register);
-app.use("/api/news", newsRoute);
+app.use("/api/scoop", newsRoute);
 
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) => {
