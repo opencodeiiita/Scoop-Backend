@@ -1,12 +1,8 @@
-import express from "express";
-const router = express.Router();
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-const { jwt } = "jsonwebtoken";
 
 export async function register(req, res) {
   try {
-    const data = req.body;
     const {
       FirstName,
       LastName,
