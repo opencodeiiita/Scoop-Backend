@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./src/config/db.config.js";
 import register from "./src/routes/auth.routes.js";
+import newsRoute from "./src/routes/news.routes.js";
 
 dotenv.config();
 const app = express();
@@ -13,13 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use("/api", api);
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+app.use("/api/auth", register);
+app.use("/api/scoop", newsRoute);
+
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
-app.use("/api/auth", register);
 app.get("/", (req, res) => {
   res.send("Hello World");
   console.log(process.env.JWT_KEY);
