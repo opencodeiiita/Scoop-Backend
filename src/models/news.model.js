@@ -1,4 +1,5 @@
-import {Schema, model} from "mongoose";
+import mongoose from "mongoose";
+const { model, Schema } = mongoose;
 
 const newsSchema = new Schema({
     Headline:{
