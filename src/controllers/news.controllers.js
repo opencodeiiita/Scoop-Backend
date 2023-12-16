@@ -28,15 +28,14 @@ export async function latestnews(req, res) {
 }
 
 export async function postNews(req, res) {
-  let session;
+  const session = await mongoose.startSession();
   try {
-    session = await mongoose.startSession();
     session.startTransaction();
     const {
       Headline,
       Location,
       Description,
-      Tags, // upvoteCount is not taken as during posting it must be 0
+      Tags, // Upvotes and upvoteCount is not taken as during posting it must be empty
       Comments,
     } = req.body;
 
@@ -51,7 +50,7 @@ export async function postNews(req, res) {
 
     const postedNews = await news.save({ session });
 
-    await User.findById(
+    await User.findByIdAndUpdate(
       req.userId,
       { $push: { News: postedNews._id } },
       { session }
@@ -73,7 +72,6 @@ export async function postNews(req, res) {
 }
 
 export async function upvoteNews(req, res) {
-  let session;
   try {
     const newsId = req.params.scoopId;
 
@@ -82,82 +80,65 @@ export async function upvoteNews(req, res) {
     if (!news) return response_404(res, "News Not Found");
 
     // checking if user has already upvoted
-    const user = await User.findById(req.userId);
-    if (user.myUpvotes.includes(newsId))
+    if (news.Upvotes.includes(req.userId))
       return response_400(res, "Already upvoted");
-
-    // writing a trasaction for upvoting
-    session = await mongoose.startSession();
-    session.startTransaction();
 
     // updating news upvote count
     await News.findByIdAndUpdate(
       newsId,
-      { $inc: { UpvoteCount: 1 } },
-      { session }
+      { $push: {Upvotes: req.userId},
+        UpvoteCount: news.UpvoteCount +  1 },
     );
 
-    // updating user's upvotes
-    await User.findByIdAndUpdate(
-      req.userId,
-      { $push: { myUpvotes: newsId } },
-      { session }
-    );
 
-    // commit the transaction
-    await session.commitTransaction();
-
-    return response_201(res, "News posted successfully", {
-      id: news._id,
-      upvotes: news.upvoteCount + 1,
+    return response_201(res, "News upvoted successfully", {
+      news_id: news._id,
+      upvotes: news.UpvoteCount + 1,
     });
   } catch (err) {
-    await session.abortTransaction();
     return response_500(res, "Error in Upvoting", err);
-  } finally {
-    session.endSession();
-  }
+  } 
 }
 
 export async function getNews(req, res) {
   try {
     const newsId = req.params.scoopId;
-
+    console.log(newsId);
     // checking if news exists
     const news = await News.findById(newsId);
     if (!news) return response_404(res, "News Not Found");
 
     return response_200(res, "News Retrieved", news);
+
   } catch (err) {
     return response_500(res, "Error in Retrieving News", err);
   }
 }
 
 export async function deleteNews(req, res) {
+  const session = await mongoose.startSession();
   try {
     const newsId = req.params.scoopId;
 
     // checking if news exists
     const news = await News.findById(newsId);
     if (!news) return response_404(res, "News Not Found");
+    // checking if this user has created the news
+    if(news.User != req.userId) return response_404(res, "This News is not created by this User");
 
     // writing a trasaction for upvoting
-    session = await mongoose.startSession();
     session.startTransaction();
-    // deletion query
+    // deletion query in News
     await News.findByIdAndDelete(newsId, { session });
 
-    // updating user's upvotes
-    await User.findByIdAndUpdate(
-      req.userId,
-      { $pop: { News: newsId } },
-      { session }
-    );
+    // update query in User
+    await User.findByIdAndUpdate(req.userId, {$pull : {News: newsId}}, {session});
 
     // commit the transaction
     await session.commitTransaction();
+    
+    return response_200(res, "News deleted successfully");
 
-    return response_204(res, "News deleted successfully");
   } catch (err) {
     await session.abortTransaction();
     return response_500(res, "Error in deleting news", err);
@@ -165,6 +146,8 @@ export async function deleteNews(req, res) {
     session.endSession();
 } 
 }
+
+
 export async function topNews(req, res) {
   try {
     const news = await News.find({}).sort({ UpvoteCount: -1 });
@@ -211,20 +194,4 @@ function getNewsOfUser(newsIds) {
         reject();
       });
   });
-}
-
-export async function latestnews(req, res) {
-  try {
-    const news = await News.find().sort({ createdAt: -1 });
-
-    if (!news) {
-      return response_404(res, "News not found");
-    }
-
-    // res.status(200).json({ news });
-    return response_200(res, "latest News", { news });
-  } catch (error) {
-    console.error("Error fetching latest news:", error);
-    return response_500(res, "Internal server error");
-  }
 }
