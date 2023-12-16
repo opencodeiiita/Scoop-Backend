@@ -17,7 +17,6 @@ app.use("/api", api);
 app.use("/api/auth", register);
 app.use("/api/scoop", newsRoute);
 
-
 const PORT = parseInt(process.env.PORT) || 4000;
 
 app.get("/", (req, res) => {
@@ -29,7 +28,7 @@ app.get("/", (req, res) => {
 //   next(new ExpressError(404, "Page not found!"));
 // });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   let { status = 500, message = "Something Went Wrong!" } = err;
   res.status(status).render("error.ejs", { message });
 });
