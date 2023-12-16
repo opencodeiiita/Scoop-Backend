@@ -1,5 +1,8 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+const upload = require('./multerMiddleware');
+const cloudinary = require('./cloudinaryConfig');
+const User = require('./models/user');
 
 export async function register(req, res) {
   try {
@@ -61,5 +64,31 @@ export async function login(req, res) {
     }
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function registerUser(req, res){
+  try {
+    // Multer middleware to handle file uploads
+    upload.single('image')(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ message: 'File upload error', error: err.message });
+      }
+
+      // If a file is uploaded, upload to Cloudinary
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.buffer, { folder: 'user_images' });
+        req.body.image = result.secure_url;
+      }
+
+      // Create user with the provided data (including image URL)
+      const newUser = new User(req.body);
+      await newUser.save();
+
+      return res.status(201).json({ message: 'User registered successfully', user: newUser });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
