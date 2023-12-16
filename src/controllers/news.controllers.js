@@ -1,7 +1,7 @@
 import News from "../models/news.model.js";
 import {response_200 ,response_404, response_500} from "../utils/responseCodes.js";
 
-export async function getnews(req, res){
+export async function latestnews(req, res){
     try {
         const news = await News.find().sort({ createdAt: -1 });
 
