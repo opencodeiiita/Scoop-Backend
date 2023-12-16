@@ -1,23 +1,26 @@
-import user from '../models/user.model.js';
+import jwt from "jsonwebtoken";
 
-// next() is the next middleware to be executed
-const isAdmin = async (req, res, next) => {
-  const { UserName } = req.body;
+const verifyToken = util.promisify(jwt.verify);
 
-  try {
-    const admin_attempt = await user.findOne({ UserName: UserName });
-
-    if (admin_attempt && admin_attempt.isAdmin === true) {
+const validateToken = async (req, res, next) => {
+  let token
+  let authHeader = req.headers.Authorization || req.headers.authorization
+  if (authHeader && authHeader.startsWith("Bearer")) {
+    token = authHeader.split(" ")[1]
+    try {
+      const decoded = await verifyToken(token, process.env.JWT_KEY)
+      req.userId = decoded.userId
       next();
-    } else {
+    } catch (err) {
       return res
-        .status(403)
-        .json({ success: false, message: 'User does not have Admin status' });
+        .status(401)
+        .json({ success: false, message: "Not an authorized user" })
     }
-  } catch (error) {
-    console.error('Error checking admin status:', error);
-    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  } else {
+    return res
+        .status(500)
+        .json({ success: false, message: "Not an authorized user or token is missing" })
   }
-};
+}
 
-export default isAdmin;
+export default validateToken
