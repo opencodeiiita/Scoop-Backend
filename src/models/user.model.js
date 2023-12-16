@@ -49,7 +49,7 @@ const userSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre("save", async function (next) {
@@ -81,7 +81,7 @@ userSchema.methods.generateToken = async function () {
       process.env.JWT_KEY,
       {
         expiresIn: "30d",
-      }
+      },
     );
   } catch (err) {
     console.log(err);
