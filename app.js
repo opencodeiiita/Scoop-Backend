@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./src/config/db.config.js";
+const express = require('express');
+const userController = require('./user.controllers');
+const app = express();
 
 dotenv.config();
 const app = express();
@@ -32,4 +35,11 @@ app.use((err, req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}! 🚀`);
   connectDB();
+});
+
+app.post('/register', userController.registerUser);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
