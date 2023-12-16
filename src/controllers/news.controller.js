@@ -1,7 +1,7 @@
 import News from "../models/news.model.js";
 import User from "../models/user.model.js";
 
-export function topNews(req, res) {
+export async function topNews(req, res) {
   return News.find({})
     .then((news) => {
       news.sort((n1, n2) => n2.UpvoteCount - n1.UpvoteCount);
@@ -12,7 +12,7 @@ export function topNews(req, res) {
     });
 }
 
-export function credibleNews(req, res) {
+export async function credibleNews(req, res) {
   return User.find({})
     .then((users) => {
       users.sort(
