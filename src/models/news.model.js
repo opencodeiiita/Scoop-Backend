@@ -31,7 +31,14 @@ const newsSchema = new Schema(
       type: Number,
       default: 0,
     },
-    User: {
+    Upvotes:  // Stores upvotes made on the news
+    [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User"
+        }
+    ],
+    User: {    // which user has created the news
       type: Schema.Types.ObjectId,
       ref: "User",
     },
