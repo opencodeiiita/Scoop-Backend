@@ -88,19 +88,24 @@ export async function allUsers(req, res) {
 export async function registerUser(req, res){
   try {
     // Multer middleware to handle file uploads
-    upload.single('image')(req, res, async (err) => {
+    upload.single('file')(req, res, async (err) => {
       if (err) {
         return res.status(400).json({ message: 'File upload error', error: err.message });
       }
 
       // If a file is uploaded, upload to Cloudinary
       if (req.file) {
-        const result = await cloudinary.uploader.upload(req.file.buffer, { folder: 'user_images' });
-        req.body.image = result.secure_url;
+        const result = await cloudinary.uploader.upload(req.file.buffer, { folder: 'user_files' });
+        req.body.fileUrl = result.secure_url;
       }
 
       // Create user with the provided data (including image URL)
-      const newUser = new User(req.body);
+      const newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        // Add other user properties as needed
+        fileUrl: req.body.fileUrl, // Using Cloudinary file URL instead of profile URL
+      });
       await newUser.save();
 
       return res.status(201).json({ message: 'User registered successfully', user: newUser });
