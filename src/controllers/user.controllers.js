@@ -4,6 +4,9 @@ const upload = require('./multerMiddleware');
 const cloudinary = require('./cloudinaryConfig');
 const User = require('./models/user');
 
+import { response_200, response_201, response_204, response_400, response_401, response_404, response_500 } from "../utils/responseCodes.js";
+
+
 export async function register(req, res) {
   try {
     const {
@@ -20,7 +23,7 @@ export async function register(req, res) {
 
     const existingUser = await User.findOne({ UserName: req.body.UserName });
     if (existingUser) {
-      res.status(400).send("User already exists");
+      return response_400(res, "User already exists");
     }
 
     //Save
@@ -40,7 +43,8 @@ export async function register(req, res) {
       .status(201)
       .json({ msg: "Saved", token: await userCreated.generateToken() });
   } catch (err) {
-    console.log(err);
+    
+    return response_500(res, "Error in Registering", err);
   }
 }
 
@@ -63,9 +67,23 @@ export async function login(req, res) {
       res.status(401).json({ msg: "Inavalid Credentials" });
     }
   } catch (error) {
+    return response_500(res, "Error in Loggin in", err);
+  }
+}
+
+
+export async function allUsers(req, res) {
+  try {
+    const allUser = await User.find({});
+    if (!allUser) {
+      response_204(res,"No Users Found");
+    }
+      response_200(res,"All User Sent",allUser)
+  } catch (error) {
     console.log(error);
   }
 }
+
 
 export async function registerUser(req, res){
   try {
@@ -90,5 +108,54 @@ export async function registerUser(req, res){
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+
+export async function findUser(req, res) {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (user===null) {
+      response_204(res,"User Not Found");
+    }
+    else {
+      response_200(res,"User Details Sent",user)
+    }
+  } catch (error) {
+    response_500(res,"Error",error);
+  }
+}
+
+export async function upVote(req, res) {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      response_404(res,'User not found')
+    }
+    const hasUpvoted = user.myUpvotes.includes(req.userId);
+    if (hasUpvoted) {
+      response_400(res,'User has already upvoted')
+    }
+    user.myUpvotes.push(req.userId);
+    await user.save();
+    response_200(res,'Upvote successful',null,null);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+export async function deleteUser(req, res) {
+  try {
+    const id = req.params.userId;
+    const result = await User.findByIdAndRemove(id).exec();
+    if (!result) {
+      response_404(res,'User not found');
+      return;
+    }
+    console.log(result);
+    response_200(res,"Deleted the User",null,null);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+
   }
 }

@@ -1,15 +1,15 @@
 import user from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import util from 'util';
 
-const verifyToken = util.promisify(jwt.verify);
 
 const validateToken = async (req, res, next) => {
   let token
-  let authHeader = req.headers.Authorization || req.headers.authorization
+  let authHeader = req.headers.Authorization || req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1]
     try {
-      const decoded = await verifyToken(token, process.env.JWT_KEY)
+      const decoded = jwt.verify(token, process.env.JWT_KEY)
       req.userId = decoded.userId
       next();
     } catch (err) {
