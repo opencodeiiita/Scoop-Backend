@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const commentSchema = new Schema(
   {
-    News: {
+    News: { // News on which comment was created
       type: Schema.Types.ObjectId,
       ref: "News",
     },
