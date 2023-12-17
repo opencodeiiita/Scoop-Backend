@@ -36,13 +36,13 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    myUpvotes: [
+    myUpvotes: [  // which users have upvoted on this user
       {
         type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    News: [
+    News: [   // this user has created which news
       {
         type: Schema.Types.ObjectId,
         ref: "News",
