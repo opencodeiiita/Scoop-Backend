@@ -10,6 +10,7 @@ import {
 } from "../utils/responseCodes.js";
 import mongoose from "mongoose";
 
+
 export async function postNews(req, res) {
   const session = await mongoose.startSession();
   try {
@@ -47,7 +48,12 @@ export async function postNews(req, res) {
       Headline: postedNews.Headline,
     });
   } catch (err) {
-    await session.abortTransaction();
+    try{
+      await session.abortTransaction();
+    }
+    catch(error) {
+      console.error("No transaction was started");
+    }
     return response_500(res, "Error in posting news", err);
   } finally {
     session.endSession();
@@ -123,7 +129,13 @@ export async function deleteNews(req, res) {
     return response_200(res, "News deleted successfully");
 
   } catch (err) {
-    await session.abortTransaction();
+    try{
+      await session.abortTransaction();
+    }
+    catch(error)
+    {
+      console.error("No transaction was started");
+    }
     return response_500(res, "Error in deleting news", err);
   } finally {
     session.endSession();
