@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 //   next(new ExpressError(404, "Page not found!"));
 // });
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   let { status = 500, message = "Something Went Wrong!" } = err;
   res.status(status).render("error.ejs", { message });
 });
