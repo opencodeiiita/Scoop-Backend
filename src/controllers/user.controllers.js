@@ -2,7 +2,6 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 const upload = require('./multerMiddleware');
 const cloudinary = require('./cloudinaryConfig');
-const User = require('./models/user');
 
 import { response_200, response_201, response_204, response_400, response_401, response_404, response_500 } from "../utils/responseCodes.js";
 
