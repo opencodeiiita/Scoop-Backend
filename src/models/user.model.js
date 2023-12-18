@@ -32,6 +32,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    fileUrl: {
+    type: String, 
+  },
     isAdmin: {
       type: Boolean,
       default: false,
