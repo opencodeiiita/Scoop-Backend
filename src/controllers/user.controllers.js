@@ -1,7 +1,6 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import {v2 as cloudinary} from 'cloudinary';
- c39befda57146c29a9c3342eeba70b3b4a0ce63d
 import { response_200, response_201, response_204, response_400, response_401, response_404, response_500 } from "../utils/responseCodes.js";
 import upload from "../middlewares/multerMiddleware.js"
 
@@ -18,7 +17,7 @@ export async function register(req, res) {
       myUpvotes,
       News,
     } = req.body;
-    console.log(req.body)
+  
     const existingUser = await User.findOne({ UserName: req.body.UserName });
     if (existingUser) {
       return response_400(res, "User already exists");
