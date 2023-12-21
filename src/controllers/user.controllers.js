@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+
 import { response_200, response_201, response_204, response_400, response_401, response_404, response_500 } from "../utils/responseCodes.js";
 
 
@@ -80,6 +81,9 @@ export async function allUsers(req, res) {
   }
 }
 
+
+
+
 export async function findUser(req, res) {
   try {
     const user = await User.findById(req.params.userId);
@@ -127,5 +131,6 @@ export async function deleteUser(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
+
   }
 }
