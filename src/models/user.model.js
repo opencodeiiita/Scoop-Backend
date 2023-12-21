@@ -22,7 +22,7 @@ const userSchema = new Schema(
     },
     ProfileImage: {
       type: String,
-      default: "",
+      default: "https://i.pinimg.com/736x/8a/c3/f9/8ac3f9735abb4b0197ee838735715833.jpg",
     },
     Email: {
       type: String,
