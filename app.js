@@ -3,6 +3,14 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./src/config/db.config.js";
 
+
+import {v2 as cloudinary} from 'cloudinary';
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 dotenv.config();
 const app = express();
 import api from "./src/routes/api.js";
@@ -15,14 +23,14 @@ app.use("/api", api);
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
+
+
 app.get("/", (req, res) => {
   res.send("Hello World");
   console.log(process.env.JWT_KEY);
 });
 
-// app.all("*", (req, res, next) => {
-//   next(new ExpressError(404, "Page not found!"));
-// });
+
 
 app.use((err, req, res, next) => {
   let { status = 500, message = "Something Went Wrong!" } = err;
