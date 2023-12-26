@@ -14,12 +14,14 @@ const newsSchema = new Schema(
       type: String,
       default: "",
     },
+    Headimage:{
+      type: String,
+    },
     // Storing HTML file as a string
     Description: {
       type: String,
-      required: true,
-      min: 2,
-      max: 2000,
+      
+     
     },
     Tags: [
       {

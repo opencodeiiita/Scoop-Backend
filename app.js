@@ -21,7 +21,7 @@ app.use(cors());
 
 app.use("/api", api);
 
-const PORT = parseInt(process.env.PORT) || 4000;
+const PORT = parseInt(process.env.PORT) || 5000;
 
 
 
