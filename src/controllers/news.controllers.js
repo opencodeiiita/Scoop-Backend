@@ -9,56 +9,63 @@ import {
   response_204,
 } from "../utils/responseCodes.js";
 import mongoose from "mongoose";
+import multer from 'multer';
+import cloudinary from 'cloudinary';
+import { v2 as cloudinaryV2 } from 'cloudinary';import upload from "../middlewares/multerMiddleware.js"
+
+cloudinaryV2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+
 
 
 export async function postNews(req, res) {
-  const session = await mongoose.startSession();
   try {
-    session.startTransaction();
-    const {
-      Headline,
-      Location,
-      Description,
-      Tags, // Upvotes and upvoteCount is not taken as during posting it must be empty
-      Comments,
-    } = req.body;
+    
+    
+      //Save
 
-    const news = new News({
-      Headline: Headline,
-      Location: Location,
-      Description: Description,
-      Tags: Tags,
-      Comments: Comments,
-      User: req.userId,
-    });
+    upload.single('headimage')(req,res,async (err)=>{
+      
+  
+      const { Headline, Location, Description, Tags, Comments } = req.body;
+      console.log(Headline)
+      if(err){
+        return response_400(res,err.message);
+      }
+      
+      console.log(req.file)
+      
+      const headImageUrl = req.file ? await uploadToCloudinary(req.file)  : null ;
+   
+      const newsCreated = await News.create({
+        Headline: Headline,
+        Headimage: headImageUrl,
+        Location: Location,
+        Description: Description,
+        Tags: Tags,
+        Comments: Comments,
+        User: req.userId,
+      
+      });
+      await User.findByIdAndUpdate(
+        req.userId,
+        { $push: { News: newsCreated._id } },
+        
+      );
 
-    const postedNews = await news.save({ session });
-
-    await User.findByIdAndUpdate(
-      req.userId,
-      { $push: { News: postedNews._id } },
-      { session }
-    );
-
-    // commit the transaction
-    await session.commitTransaction();
-
-    return response_201(res, "News posted successfully", {
-      id: postedNews._id,
-      Headline: postedNews.Headline,
-    });
-  } catch (err) {
-    try{
-      await session.abortTransaction();
+      res
+        .status(201)
+        .json({ msg: "Saved"});
+      });
+    } catch (err) {
+      console.log(err)
+      return response_500(res, "Error in Creating", err);
     }
-    catch(error) {
-      console.error("No transaction was started");
-    }
-    return response_500(res, "Error in posting news", err);
-  } finally {
-    session.endSession();
   }
-}
 
 export async function upvoteNews(req, res) {
   try {
@@ -140,4 +147,19 @@ export async function deleteNews(req, res) {
   } finally {
     session.endSession();
 } 
+}
+const uploadToCloudinary = async(file) =>{
+  try{
+    console.log('Uploading to Cloudinary...');
+    console.log(file)
+    const result = await cloudinaryV2.uploader.upload(file.path, {
+      folder: 'new',
+      resource_type: 'auto',
+    });
+    console.log('Upload successful:', result);
+   return result.secure_url;
+  }catch(error){
+    console.error('Error uploading to Cloudinary:', error);
+    throw new Error('Error uploading to Cloudinary');
+  }
 }
