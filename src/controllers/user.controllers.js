@@ -59,27 +59,26 @@ export async function register(req, res) {
   }
 
 export async function login(req, res) {
-    try {
-      const { UserName, Password } = req.body;
-      //console.log(Password);
-      const existUser = await User.findOne({ UserName: req.body.UserName });
-      //console.log(existUser);
-      if (!existUser) {
-        res.status(400).send("User Not Found");
-      }
-      const passValid = await bcrypt.compare(Password, existUser.Password);
-      //console.log(passValid);
-      if (passValid) {
-        res
-          .status(201)
-          .json({ msg: "UserFound", token: await existUser.generateToken() });
-      } else {
-        res.status(401).json({ msg: "Inavalid Credentials" });
-      }
-    } catch (error) {
-      return response_500(res, "Error in Loggin in", err);
+  try {
+    const { UserName, Password } = req.body;
+    //console.log(Password);
+    const existUser = await User.findOne({ UserName: req.body.UserName });
+    //console.log(existUser);
+    if (!existUser) {
+      res.status(400).send("User Not Found");
     }
+    const passValid = await bcrypt.compare(Password, existUser.Password);
+    //console.log(passValid);
+    if (passValid) {
+      const token = await existUser.generateToken();
+      res.status(201).json({ msg: "UserFound", user: existUser, token });
+    } else {
+      res.status(401).json({ msg: "Inavalid Credentials" });
+    }
+  } catch (error) {
+    console.log(error);
   }
+}
 
 
   export async function allUsers(req, res) {
