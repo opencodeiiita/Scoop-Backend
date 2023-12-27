@@ -50,7 +50,7 @@ export async function register(req, res) {
 
       res
         .status(201)
-        .json({ msg: "Saved", token: await userCreated.generateToken() });
+        .json({ msg: "Saved", user:userCreated, token: await userCreated.generateToken() });
       });
     } catch (err) {
       console.log(err)
