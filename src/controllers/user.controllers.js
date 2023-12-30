@@ -91,7 +91,7 @@ export async function verifytoken(req, res) {
         }
         response_200(res, "User found", user);
     } catch (error) {
-        console.log(error);
+        response_500(res, "Internal server error", error);
     }
 }
 
