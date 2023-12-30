@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import {v2 as cloudinary} from 'cloudinary';
 import { response_200, response_201, response_204, response_400, response_401, response_404, response_500 } from "../utils/responseCodes.js";
 import upload from "../middlewares/multerMiddleware.js"
+import jwt from "jsonwebtoken";
 
 
 export async function register(req, res) {
@@ -80,6 +81,20 @@ export async function login(req, res) {
   }
 }
 
+export async function verifytoken(req, res) {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+        return response_401(res, "User not found");
+        }
+        response_200(res, "User found", user);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
   export async function allUsers(req, res) {
     try {
@@ -89,7 +104,7 @@ export async function login(req, res) {
       }
       response_200(res, "All User Sent", allUser)
     } catch (error) {
-      console.log(error);
+      response_500(res, "Internal server error", error);
     }
   }
 
