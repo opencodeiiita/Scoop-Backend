@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { v2 as cloudinary } from 'cloudinary';
 import { response_200, response_201, response_204, response_400, response_401, response_404, response_500 } from "../utils/responseCodes.js";
 import upload from "../middlewares/multerMiddleware.js"
+import jwt from "jsonwebtoken";
 
 
 export async function register(req, res) {
@@ -60,14 +61,16 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   try {
-    const { UserName, Password } = req.body;
+    
+    
+    
     //console.log(Password);
-    const existUser = await User.findOne({ UserName: req.body.UserName });
+    const existUser = await User.findOne({ Email: req.body.Email });
     //console.log(existUser);
     if (!existUser) {
       res.status(400).send("User Not Found");
     }
-    const passValid = await bcrypt.compare(Password, existUser.Password);
+    const passValid = await bcrypt.compare(req.body.Password, existUser.Password);
     //console.log(passValid);
     if (passValid) {
       const token = await existUser.generateToken();
@@ -79,6 +82,21 @@ export async function login(req, res) {
     console.log(error);
   }
 }
+
+export async function verifytoken(req, res) {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+        return response_401(res, "User not found");
+        }
+        response_200(res, "User found", user);
+    } catch (error) {
+        response_500(res, "Internal server error", error);
+    }
+}
+
 
 
 export async function updateUser(req, res) {

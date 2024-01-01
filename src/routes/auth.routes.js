@@ -1,7 +1,7 @@
 import express from "express";
 import upload from "../middlewares/multerMiddleware.js"
 const router = express.Router();
-import { register, login } from "../controllers/user.controllers.js";
+import {register, login, verifytoken} from "../controllers/user.controllers.js";
 
 router.get("/register", (req, res) => {
   res.send("Hii");
@@ -14,5 +14,6 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", login);
+router.get("/verifytoken", verifytoken);
 
 export default router;
