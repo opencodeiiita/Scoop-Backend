@@ -82,33 +82,34 @@ export async function login(req, res) {
 
 
 export async function updateUser(req, res) {
-   try{
+  try {
     const userId = req.userId;
     const existingUser = await User.findOne({ _id: userId });
-
     if (!existingUser) {
       res.status(400).send("User Not Found");
     }
-
     const {
-      FirstName,  
+      FirstName,
       LastName,
       UserName,
       Email,
       Password,
     } = req.body;
 
+    if (req.file) {
+      const profileImageUrl = await uploadToCloudinary(req.file);
+      existingUser.ProfileImage = profileImageUrl;
+    }
     if (FirstName) existingUser.FirstName = FirstName;
     if (LastName) existingUser.LastName = LastName;
     if (UserName) existingUser.UserName = UserName;
     if (Email) existingUser.Email = Email;
-    if (Password) existingUser.Password = await bcrypt.hash(Password, 10);
 
     const updatedUser = await existingUser.save();
+    res.status(200).json({ message: 'User details updated successfully', user: updatedUser });
 
-    res.status(200).json({ message: 'User details updated successfully', user: updatedUser});
   }
-  catch(error){
+  catch (error) {
     console.log(error);
     return response_500(res, 'Error in updating user details', error);
   }
