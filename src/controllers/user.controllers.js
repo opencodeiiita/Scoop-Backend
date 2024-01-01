@@ -60,14 +60,16 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   try {
-    const { UserName, Password } = req.body;
+    
+    
+    
     //console.log(Password);
-    const existUser = await User.findOne({ UserName: req.body.UserName });
+    const existUser = await User.findOne({ Email: req.body.Email });
     //console.log(existUser);
     if (!existUser) {
       res.status(400).send("User Not Found");
     }
-    const passValid = await bcrypt.compare(Password, existUser.Password);
+    const passValid = await bcrypt.compare(req.body.Password, existUser.Password);
     //console.log(passValid);
     if (passValid) {
       const token = await existUser.generateToken();
